@@ -239,21 +239,29 @@
             $.post("api/friends", newPerson, function (data) {
                 if (data) {
                     alert("You have been added!")
+                        .then(function(response){
+                            //change link to Heroku link
+
+                            //modal pop up
+                            $('#match-image').attr('src', response.photo);
+                            $('#match-name').text(response.name);
+                            $('#message').text('You should be friends with ' + response.name + '!')
+                            $('#modal').modal('show');
+                        });
+                    return false;
                 }
-                else {
-                    alert("Sorry there are too many lonely people")
-                }
-            })
-        }
         else {
             alert("I require more resources")
         }
     })
-    $(".dropdown-menu li a").click(function(){
-        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>' );
-        $(this).parents(".dropdown").find('.btn').val($(this).data("value"));
-    });
+        }
 
+        $(".dropdown-menu li a").click(function(){
+            $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>' );
+            $(this).parents(".dropdown").find('.btn').val($(this).data("value"));
+        });
+
+    })
 </script>
 
 

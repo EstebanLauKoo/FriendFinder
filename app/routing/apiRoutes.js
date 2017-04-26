@@ -1,44 +1,68 @@
 var friendsData = require("../data/friends");
 
 module.exports = function(app) {
-    // API GET Requests
-    // Below code handles when users "visit" a page.
-    // In each of the below cases when a user visits a link
-    // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
-    // ---------------------------------------------------------------------------
 
     app.get("/api/friends", function(req, res) {
         res.json(friendsData);
     });
 
-    // API POST Requests
-    // Below code handles when a user submits a form and thus submits data to the server.
-    // In each of the below cases, when a user submits form data (a JSON object)
-    // ...the JSON is pushed to the appropriate JavaScript array
-    // (ex. User fills out a reservation request... this data is then sent to the server...
-    // Then the server saves the data to the tableData array)
-    // ---------------------------------------------------------------------------
-
     app.post("/api/friends", function(req, res) {
-        // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
-        // It will do this by sending out the value "true" have a table
-        if (friendsData.length < 50) {
-            friendsData.push(req.body);
-            res.json(true);
-        }
-        else {
-            res.json(false);
-        }
-    });
 
-    // ---------------------------------------------------------------------------
-    // I added this below code so you could clear out the table while working with the functionality.
-    // Don"t worry about it!
+        var friend = req.body;
+
+        friendsData.push(friend);
+        res.json(true)
+
+        newFriendScoreArr = [];
+        for (var i = 0; i < friend.scores.length; i++) {
+            newFriendScoreArr.push(friend.scores[i])
+        }
+        var newFriendScore = 0
+        for (var i = 0; i < newFriendScoreArr.length; i++) {
+            newFriendScore += parseInt(newFriendScoreArr[i]);
+        }
+
+        app.get("/api/friends", function (req, res) {
+            console.log(res.json(friendsData))
+            var didWeJustBecomeBestFriends = 500;
+            var match;
+            for (var i = 0; i < response.length; i++) {
+                friendScoreArr = [];
+                friendScore = 0;
+                friendScoreArr.push(
+                    response[i].question1,
+                    response[i].question2,
+                    response[i].question3,
+                    response[i].question4,
+                    response[i].question5,
+                    response[i].question6,
+                    response[i].question7,
+                    response[i].question8,
+                    response[i].question9,
+                    response[i].question10
+                );
+                var friendScore = 0;
+                for (var j = 0; j < friendScoreArr.length; j++) {
+                    friendScore += parseInt(friendScoreArr[j]);
+                }
+                var similarity = newFriendScore - friendScore;
+                similarity = Math.abs(similarity);
+                console.log(similarity)
+                if (similarity < didWeJustBecomeBestFriends) {
+                    didWeJustBecomeBestFriends = similarity;
+                    match = response[i];
+                }
+            }
+            res.send(match);
+        })
+})
 
     app.post("/api/clear", function() {
-        // Empty out the arrays of data
+
         friendsData = [];
 
         console.log(friendsData);
-    });
-};
+})
+
+}
+
