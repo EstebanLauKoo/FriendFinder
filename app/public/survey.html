@@ -189,6 +189,27 @@
     <button type="submit" class="btn btn-primary btn-lg btn-block submit" >
         Submit</button>
 
+    <div class="modal fade" id="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h1 class="modal-title text-center">You have a match!</h1>
+                </div>
+                <div class="modal-body">
+                    <h1 id="match-name" class="text-center"></h1>
+                    <img src="" alt="" id="match-image" class="img-responsive">
+                    <h4 id="message" class="text-center"></h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
     <hr>
     <footer class="footer">
         <div class="container">
@@ -236,32 +257,25 @@
             ]
         }
         console.log(newPerson)
-            $.post("api/friends", newPerson, function (data) {
+            $.post("api/friends", newPerson) .then(function (data) {
+                console.log(data)
                 if (data) {
                     alert("You have been added!")
-                        .then(function(response){
-                            //change link to Heroku link
 
-                            //modal pop up
-                            $('#match-image').attr('src', response.photo);
-                            $('#match-name').text(response.name);
-                            $('#message').text('You should be friends with ' + response.name + '!')
-                            $('#modal').modal('show');
-                        });
-                    return false;
+                    $('#match-image').attr('src', data.customerPhoto);
+                    $('#match-name').text(data.customerName);
+                    $('#message').text('You should be friends with ' + data.customerName + '!')
+                    $('#modal').modal('show');
                 }
-        else {
-            alert("I require more resources")
-        }
+                return false
+            })
+    }
     })
-        }
 
-        $(".dropdown-menu li a").click(function(){
-            $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>' );
-            $(this).parents(".dropdown").find('.btn').val($(this).data("value"));
-        });
-
-    })
+    $(".dropdown-menu li a").click(function(){
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>' );
+        $(this).parents(".dropdown").find('.btn').val($(this).data("value"));
+    });
 </script>
 
 

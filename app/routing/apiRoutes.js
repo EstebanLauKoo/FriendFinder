@@ -1,5 +1,4 @@
 var friendsData = require("../data/friends");
-
 module.exports = function(app) {
 
     app.get("/api/friends", function(req, res) {
@@ -7,11 +6,10 @@ module.exports = function(app) {
     });
 
     app.post("/api/friends", function(req, res) {
+        var match;
 
         var friend = req.body;
-
-        friendsData.push(friend);
-        res.json(true)
+        friendsData.push(friend)
 
         newFriendScoreArr = [];
         for (var i = 0; i < friend.scores.length; i++) {
@@ -22,40 +20,42 @@ module.exports = function(app) {
             newFriendScore += parseInt(newFriendScoreArr[i]);
         }
 
-        app.get("/api/friends", function (req, res) {
-            console.log(res.json(friendsData))
-            var didWeJustBecomeBestFriends = 500;
-            var match;
-            for (var i = 0; i < response.length; i++) {
-                friendScoreArr = [];
+        var friendScore = 0
+        var scoreToBeat = 500;
+        for (var i = 0; i < friendsData.length; i++) {
+            friendScoreArr = [];
+            friendScoreArr.push(
+                friendsData[i].scores[0],
+                friendsData[i].scores[1],
+                friendsData[i].scores[2],
+                friendsData[i].scores[3],
+                friendsData[i].scores[4],
+                friendsData[i].scores[5],
+                friendsData[i].scores[6],
+                friendsData[i].scores[7],
+                friendsData[i].scores[8],
+                friendsData[i].scores[9]
+            )
+
+            adder(friendScoreArr)
+
+            function adder(friendScoreArr) {
                 friendScore = 0;
-                friendScoreArr.push(
-                    response[i].question1,
-                    response[i].question2,
-                    response[i].question3,
-                    response[i].question4,
-                    response[i].question5,
-                    response[i].question6,
-                    response[i].question7,
-                    response[i].question8,
-                    response[i].question9,
-                    response[i].question10
-                );
-                var friendScore = 0;
-                for (var j = 0; j < friendScoreArr.length; j++) {
-                    friendScore += parseInt(friendScoreArr[j]);
-                }
-                var similarity = newFriendScore - friendScore;
-                similarity = Math.abs(similarity);
-                console.log(similarity)
-                if (similarity < didWeJustBecomeBestFriends) {
-                    didWeJustBecomeBestFriends = similarity;
-                    match = response[i];
+                for (var i = 0; i < friendScoreArr.length; i++) {
+                    friendScore += parseInt(friendScoreArr[i]);
                 }
             }
-            res.send(match);
-        })
-})
+
+            var difference = newFriendScore - friendScore;
+            difference = Math.abs(difference);
+
+            if (difference < scoreToBeat) {
+                scoreToBeat = difference;
+                match = friendsData[i];
+            }
+        }
+        res.json(match)
+    })
 
     app.post("/api/clear", function() {
 
